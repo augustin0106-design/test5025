@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>國中 IEP 個別化教育計畫草擬工具</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --ink: #1f2937;
+      --muted: #64748b;
+      --line: #dbe3ef;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --soft: #eff6ff;
+      --warn: #fff7ed;
+      --warn-line: #fed7aa;
+      --ok: #ecfdf5;
+      --ok-line: #a7f3d0;
+      --danger: #fef2f2;
+      --danger-line: #fecaca;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef5ff 0%, var(--bg) 280px);
+      line-height: 1.65;
+    }
+
+    header {
+      padding: 36px 24px 24px;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      letter-spacing: .02em;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 920px;
+    }
+
+    .app {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto 48px;
+      display: grid;
+      grid-template-columns: 380px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+      .sticky { position: static !important; }
+    }
+
+    .card {
+      background: rgba(255,255,255,.96);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .07);
+      overflow: hidden;
+    }
+
+    .card h2, .card h3 {
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .card .head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfdff;
+    }
+
+    .card .body {
+      padding: 18px 20px 22px;
+    }
+
+    .sticky {
+      position: sticky;
+      top: 16px;
+    }
+
+    .section-title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 22px 0 10px;
+      padding-left: 10px;
+      border-left: 4px solid var(--accent);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 680px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    label {
+      display: block;
+      font-size: .92rem;
+      color: #334155;
+      font-weight: 650;
+      margin: 10px 0 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: var(--ink);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: .96rem;
+      font-family: inherit;
+      outline: none;
+      transition: border .15s ease, box-shadow .15s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .14);
+    }
+
+    textarea { min-height: 90px; resize: vertical; }
+
+    .small-note {
+      color: var(--muted);
+      font-size: .86rem;
+      margin-top: 6px;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .choice-grid { grid-template-columns: 1fr; }
+    }
+
+    .chip {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 9px 10px;
+      font-size: .9rem;
+      color: #334155;
+      cursor: pointer;
+      min-height: 42px;
+    }
+
+    .chip input {
+      width: auto;
+      margin-top: 3px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(37, 99, 235, .22);
+    }
+
+    .primary:hover { background: var(--accent-dark); }
+
+    .secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .ghost {
+      background: #fff;
+      border: 1px solid var(--line);
+      color: #334155;
+    }
+
+    .danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .banner {
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: #1e3a8a;
+      font-size: .92rem;
+    }
+
+    .banner.warn {
+      background: var(--warn);
+      border-color: var(--warn-line);
+      color: #9a3412;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 14px 0;
+      background: #fbfdff;
+    }
+
+    .tab {
+      background: #fff;
+      border: 1px solid var(--line);
+      color: #475569;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: .9rem;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .output {
+      padding: 22px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+    }
+
+    .doc {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #fff;
+      color: #111827;
+    }
+
+    .doc h1 {
+      text-align: center;
+      font-size: 1.45rem;
+      margin: 0 0 18px;
+    }
+
+    .doc h2 {
+      font-size: 1.05rem;
+      margin: 22px 0 8px;
+      border-bottom: 2px solid #111827;
+      padding-bottom: 4px;
+    }
+
+    .doc h3 {
+      font-size: .98rem;
+      margin: 14px 0 6px;
+    }
+
+    .doc table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 14px;
+      table-layout: fixed;
+    }
+
+    .doc th, .doc td {
+      border: 1px solid #6b7280;
+      padding: 7px 8px;
+      vertical-align: top;
+      word-break: break-word;
+    }
+
+    .doc th {
+      background: #f3f4f6;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .doc p { margin: 6px 0; }
+
+    .doc ul, .doc ol { margin: 6px 0 8px 1.2em; padding: 0; }
+
+    .editable {
+      min-height: 400px;
+      outline: none;
+      padding: 4px;
+      border-radius: 12px;
+    }
+
+    .editable:focus {
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+    }
+
+    .quality-panel {
+      display: grid;
+      gap: 8px;
+      margin: 14px 0 0;
+    }
+
+    .quality-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: .9rem;
+      background: #fff;
+    }
+
+    .quality-item.ok {
+      background: var(--ok);
+      border-color: var(--ok-line);
+      color: #065f46;
+    }
+
+    .quality-item.warn {
+      background: var(--warn);
+      border-color: var(--warn-line);
+      color: #9a3412;
+    }
+
+    .quality-item.bad {
+      background: var(--danger);
+      border-color: var(--danger-line);
+      color: #991b1b;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 18px 0;
+    }
+
+    .row-help {
+      color: var(--muted);
+      font-size: .84rem;
+      margin: -3px 0 8px;
+    }
+
+    .inline-fields {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 720px) {
+      .inline-fields { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      header, .sticky, .tabs, .head, .actions, .quality-panel, .form-panel { display: none !important; }
+      .app { display: block; width: 100%; margin: 0; }
+      .card { box-shadow: none; border: 0; }
+      .output { padding: 0; border: 0; }
+      .doc { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>國中 IEP 個別化教育計畫草擬工具</h1>
+    <p>輸入學生特質與教育需求後，系統會依國中資源班常用欄位產生 IEP 草稿，並可直接匯出為 Word 可開啟檔案。所有資料僅在本機瀏覽器運作，不會上傳。</p>
+  </header>
+
+  <main class="app">
+    <aside class="card sticky form-panel">
+      <div class="head">
+        <h2>快速操作</h2>
+      </div>
+      <div class="body">
+        <div class="banner warn">此工具產生的是草稿，仍需由特教教師、普通班教師、家長與相關人員依學生實際表現共同審核。</div>
+        <label for="templateMode">產出模式</label>
+        <select id="templateMode">
+          <option value="standard">標準版：現況、需求、目標、策略、評量</option>
+          <option value="meeting">會議版：加入會議討論與親師合作</option>
+          <option value="brief">精簡版：便於貼入校務系統</option>
+        </select>
+        <label for="goalCount">每個優先領域產生目標數</label>
+        <select id="goalCount">
+          <option value="1">1 組年度／學期目標</option>
+          <option value="2" selected>2 組年度／學期目標</option>
+          <option value="3">3 組年度／學期目標</option>
+        </select>
+        <div class="actions">
+          <button class="primary" onclick="generateIEP()">產生 IEP 草稿</button>
+          <button class="secondary" onclick="exportWord()">匯出 Word</button>
+          <button class="ghost" onclick="copyOutput()">複製文字</button>
+          <button class="ghost" onclick="window.print()">列印</button>
+          <button class="danger" onclick="clearForm()">清空</button>
+        </div>
+        <div class="divider"></div>
+        <h3>目標品質檢核</h3>
+        <div id="qualityPanel" class="quality-panel">
+          <div class="quality-item warn">尚未產生草稿。</div>
+        </div>
+        <div class="divider"></div>
+        <h3>使用建議</h3>
+        <p class="small-note">建議先填寫「學生特質摘要」「優勢」「主要困難」「教師觀察」，再勾選優先領域。文字越具體，產出越貼近實務。</p>
+      </div>
+    </aside>
+
+    <section class="card">
+      <div class="tabs">
+        <button class="tab active" type="button" onclick="scrollToBlock('basic')">基本資料</button>
+        <button class="tab" type="button" onclick="scrollToBlock('profile')">學生現況</button>
+        <button class="tab" type="button" onclick="scrollToBlock('needs')">需求與服務</button>
+        <button class="tab" type="button" onclick="scrollToBlock('outputWrap')">產出結果</button>
+      </div>
+
+      <div class="body">
+        <div class="banner">欄位架構參考個別化教育計畫常見法定內容：能力現況、家庭狀況與需求評估、特殊教育與相關服務、學年與學期目標、評量方式、行為介入與轉銜輔導。</div>
+
+        <section id="basic">
+          <div class="section-title">一、學生與會議基本資料</div>
+          <div class="grid-3">
+            <div>
+              <label for="school">學校名稱</label>
+              <input id="school" placeholder="例：臺北市立○○國中" />
+            </div>
+            <div>
+              <label for="semester">學年度／學期</label>
+              <input id="semester" placeholder="例：115學年度第1學期" />
+            </div>
+            <div>
+              <label for="meetingDate">IEP會議日期</label>
+              <input id="meetingDate" type="date" />
+            </div>
+          </div>
+          <div class="grid-3">
+            <div>
+              <label for="studentName">學生姓名或代碼</label>
+              <input id="studentName" placeholder="建議輸入代碼，避免個資外洩" />
+            </div>
+            <div>
+              <label for="gradeClass">年級班級</label>
+              <select id="gradeClass">
+                <option value="國中七年級">國中七年級</option>
+                <option value="國中八年級">國中八年級</option>
+                <option value="國中九年級">國中九年級</option>
+              </select>
+            </div>
+            <div>
+              <label for="placement">安置與服務型態</label>
+              <select id="placement">
+                <option value="普通班接受資源班服務">普通班接受資源班服務</option>
+                <option value="普通班接受巡迴輔導服務">普通班接受巡迴輔導服務</option>
+                <option value="集中式特教班">集中式特教班</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label for="disability">障礙類別／特殊教育資格</label>
+              <select id="disability">
+                <option value="學習障礙">學習障礙</option>
+                <option value="自閉症">自閉症</option>
+                <option value="智能障礙">智能障礙</option>
+                <option value="情緒行為障礙">情緒行為障礙</option>
+                <option value="其他障礙或多重需求">其他障礙或多重需求</option>
+                <option value="身心障礙且資賦優異">身心障礙且資賦優異</option>
+              </select>
+            </div>
+            <div>
+              <label for="participants">參與人員</label>
+              <input id="participants" placeholder="例：特教教師、導師、家長、輔導教師、學生本人" />
+            </div>
+          </div>
+        </section>
+
+        <section id="profile">
+          <div class="section-title">二、學生能力現況、家庭狀況與需求評估</div>
+          <label for="profileSummary">學生特質摘要</label>
+          <textarea id="profileSummary" placeholder="例：學生口語表達清楚，但遇到多步驟任務容易卡住；對自然與資訊主題有高度興趣，面對臨時變動會焦慮。"></textarea>
+          <div class="grid-2">
+            <div>
+              <label for="strengths">優勢能力與興趣</label>
+              <textarea id="strengths" placeholder="例：記憶力佳、視覺學習較好、對昆蟲與車輛有興趣、願意在熟悉成人提示下嘗試。"></textarea>
+            </div>
+            <div>
+              <label for="challenges">主要困難與限制</label>
+              <textarea id="challenges" placeholder="例：書寫速度慢、應用題理解弱、情緒受挫時沉默、同儕互動較被動。"></textarea>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label for="family">家庭狀況與家長期待</label>
+              <textarea id="family" placeholder="例：家長期待學生提升作業完成度、情緒表達與同儕互動；可配合每日短時間練習。"></textarea>
+            </div>
+            <div>
+              <label for="teacherObservation">普通班／任課教師觀察</label>
+              <textarea id="teacherObservation" placeholder="例：課堂能聽懂口頭指令，但需確認是否真正開始執行；遇到開放式問題容易放棄。"></textarea>
+            </div>
+          </div>
+
+          <div class="section-title">三、各領域現況</div>
+          <div class="grid-2">
+            <div>
+              <label for="chineseStatus">國語文／閱讀書寫</label>
+              <textarea id="chineseStatus" placeholder="例：能閱讀短篇文章，但不易抓重點；作文需句型架構與段落提示。"></textarea>
+            </div>
+            <div>
+              <label for="mathStatus">數學／抽象理解</label>
+              <textarea id="mathStatus" placeholder="例：基本計算可完成，但四則混合與文字題需分步驟提示。"></textarea>
+            </div>
+            <div>
+              <label for="learningStatus">學習策略與執行功能</label>
+              <textarea id="learningStatus" placeholder="例：需要視覺化步驟、檢核表與時間提醒；可在明確範例後完成類似任務。"></textarea>
+            </div>
+            <div>
+              <label for="socialStatus">社會互動與溝通</label>
+              <textarea id="socialStatus" placeholder="例：願意與同儕互動，但不易判斷他人情緒、語氣與隱含需求。"></textarea>
+            </div>
+            <div>
+              <label for="behaviorStatus">情緒行為與自我調節</label>
+              <textarea id="behaviorStatus" placeholder="例：被糾正時容易沉默或離開座位，需要低威脅提醒與冷靜策略。"></textarea>
+            </div>
+            <div>
+              <label for="lifeStatus">生活管理與校園適應</label>
+              <textarea id="lifeStatus" placeholder="例：物品整理與時間分配需成人提醒；可透過固定流程逐漸建立習慣。"></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section id="needs">
+          <div class="section-title">四、需求勾選與優先目標領域</div>
+          <p class="row-help">勾選越精準，產出目標越聚焦。建議每學期優先處理 2–4 個領域。</p>
+
+          <label>特殊教育需求</label>
+          <div class="choice-grid" data-group="supportNeeds">
+            <label class="chip"><input type="checkbox" value="簡化與分段指令" />簡化與分段指令</label>
+            <label class="chip"><input type="checkbox" value="視覺提示與步驟表" />視覺提示與步驟表</label>
+            <label class="chip"><input type="checkbox" value="閱讀理解策略" />閱讀理解策略</label>
+            <label class="chip"><input type="checkbox" value="書寫組織鷹架" />書寫組織鷹架</label>
+            <label class="chip"><input type="checkbox" value="數學解題流程" />數學解題流程</label>
+            <label class="chip"><input type="checkbox" value="注意力與時間管理" />注意力與時間管理</label>
+            <label class="chip"><input type="checkbox" value="社交理解與情境演練" />社交理解與情境演練</label>
+            <label class="chip"><input type="checkbox" value="情緒辨識與調節" />情緒辨識與調節</label>
+            <label class="chip"><input type="checkbox" value="行為功能介入" />行為功能介入</label>
+            <label class="chip"><input type="checkbox" value="親師合作與家庭延伸" />親師合作與家庭延伸</label>
+            <label class="chip"><input type="checkbox" value="評量調整" />評量調整</label>
+            <label class="chip"><input type="checkbox" value="轉銜輔導" />轉銜輔導</label>
+          </div>
+
+          <label>本學期優先目標領域</label>
+          <div class="choice-grid" data-group="priorityDomains">
+            <label class="chip"><input type="checkbox" value="國語文閱讀與書寫" />國語文閱讀與書寫</label>
+            <label class="chip"><input type="checkbox" value="數學解題與計算" />數學解題與計算</label>
+            <label class="chip"><input type="checkbox" value="學習策略與任務完成" />學習策略與任務完成</label>
+            <label class="chip"><input type="checkbox" value="注意力與執行功能" />注意力與執行功能</label>
+            <label class="chip"><input type="checkbox" value="社交溝通與同儕互動" />社交溝通與同儕互動</label>
+            <label class="chip"><input type="checkbox" value="情緒行為與自我調節" />情緒行為與自我調節</label>
+            <label class="chip"><input type="checkbox" value="生活管理與校園適應" />生活管理與校園適應</label>
+            <label class="chip"><input type="checkbox" value="升學與生涯轉銜" />升學與生涯轉銜</label>
+          </div>
+
+          <div class="grid-2">
+            <div>
+              <label for="accommodation">評量與課程調整</label>
+              <textarea id="accommodation" placeholder="例：延長作答時間、分段評量、提供關鍵字提示、降低抄寫量、允許口頭回答。"></textarea>
+            </div>
+            <div>
+              <label for="relatedService">相關專業服務與行政支援</label>
+              <textarea id="relatedService" placeholder="例：輔導教師諮詢、職能治療建議、社工或心理師諮詢、課堂座位安排。"></textarea>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label for="behaviorPlan">行為功能介入摘要</label>
+              <textarea id="behaviorPlan" placeholder="若有情緒或行為問題，可填：誘發情境、行為功能、替代行為、增強策略與行政支援。"></textarea>
+            </div>
+            <div>
+              <label for="transitionPlan">轉銜輔導與服務</label>
+              <textarea id="transitionPlan" placeholder="例：九年級升學適性輔導、認識高中職群科、生活自理與自我倡議練習。"></textarea>
+            </div>
+          </div>
+
+          <div class="section-title">五、目標設定參數</div>
+          <div class="inline-fields">
+            <div>
+              <label for="successRate">達成標準</label>
+              <select id="successRate">
+                <option value="80%" selected>80%</option>
+                <option value="70%">70%</option>
+                <option value="90%">90%</option>
+                <option value="連續3次中有2次達成">連續3次中有2次達成</option>
+              </select>
+            </div>
+            <div>
+              <label for="duration">追蹤期間</label>
+              <select id="duration">
+                <option value="連續4週" selected>連續4週</option>
+                <option value="連續6週">連續6週</option>
+                <option value="連續8週">連續8週</option>
+                <option value="本學期末前">本學期末前</option>
+              </select>
+            </div>
+            <div>
+              <label for="supportLevel">支持條件</label>
+              <select id="supportLevel">
+                <option value="在教師提供視覺提示與口頭提醒下" selected>視覺提示＋口頭提醒</option>
+                <option value="在教師提供範例與分段提示下">範例＋分段提示</option>
+                <option value="在同儕示範與教師回饋下">同儕示範＋教師回饋</option>
+                <option value="在逐步減少成人提示的情境下">逐步減少提示</option>
+              </select>
+            </div>
+            <div>
+              <label for="evaluationMethod">主要評量方式</label>
+              <select id="evaluationMethod">
+                <option value="課堂觀察、作品檢核、學習單與教師紀錄" selected>觀察＋作品＋學習單</option>
+                <option value="情境任務、行為紀錄與自我檢核表">情境任務＋行為紀錄</option>
+                <option value="紙筆測驗、作業表現與口頭問答">紙筆＋作業＋口頭</option>
+                <option value="檢核表、晤談紀錄與親師回饋">檢核表＋晤談＋親師回饋</option>
+              </select>
+            </div>
+          </div>
+          <label for="customGoal">自訂優先目標或限制條件</label>
+          <textarea id="customGoal" placeholder="例：希望目標不要太多；優先提升課堂任務完成度與理解同學情緒，不處理學科成績。"></textarea>
+        </section>
+      </div>
+
+      <div id="outputWrap" class="output">
+        <div class="actions" style="margin-top:0; margin-bottom:14px;">
+          <button class="primary" onclick="generateIEP()">重新產生</button>
+          <button class="secondary" onclick="exportWord()">匯出 Word</button>
+          <button class="ghost" onclick="copyOutput()">複製結果</button>
+        </div>
+        <div id="output" class="doc editable" contenteditable="true">
+          <h1>尚未產生 IEP 草稿</h1>
+          <p>請先輸入學生資料與需求，再點選「產生 IEP 草稿」。產出後可直接在此區塊編輯文字，再匯出 Word。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+
+    function val(id, fallback = '未填寫') {
+      const el = $(id);
+      if (!el) return fallback;
+      const v = String(el.value || '').trim();
+      return v || fallback;
+    }
+
+    function todayText() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function getChecked(groupName) {
+      return Array.from(document.querySelectorAll(`[data-group="${groupName}"] input:checked`)).map(x => x.value);
+    }
+
+    function esc(text) {
+      return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/\n/g, '<br>');
+    }
+
+    function list(items) {
+      const arr = items.filter(Boolean).filter(x => x !== '未填寫');
+      if (!arr.length) return '<p>未填寫，建議補充具體觀察資料。</p>';
+      return '<ul>' + arr.map(x => `<li>${esc(x)}</li>`).join('') + '</ul>';
+    }
+
+    function inferNeeds() {
+      const needs = new Set(getChecked('supportNeeds'));
+      const text = [
+        val('profileSummary',''), val('strengths',''), val('challenges',''), val('teacherObservation',''),
+        val('chineseStatus',''), val('mathStatus',''), val('learningStatus',''), val('socialStatus',''),
+        val('behaviorStatus',''), val('lifeStatus',''), val('customGoal','')
+      ].join(' ');
+      const domain = val('disability','');
+      if (/自閉|語氣|情緒|同儕|社交|眼神|固著|變動|顧客/.test(text + domain)) {
+        needs.add('社交理解與情境演練');
+        needs.add('情緒辨識與調節');
+      }
+      if (/書寫|作文|閱讀|字詞|理解|段落|摘要/.test(text)) {
+        needs.add('閱讀理解策略');
+        needs.add('書寫組織鷹架');
+      }
+      if (/計算|數學|文字題|應用題|四則|抽象/.test(text)) {
+        needs.add('數學解題流程');
+      }
+      if (/注意|拖延|任務|時間|步驟|執行|卡住|作業/.test(text)) {
+        needs.add('注意力與時間管理');
+        needs.add('視覺提示與步驟表');
+      }
+      if (/衝動|離座|哭|吼|沉默|拒絕|焦慮|受挫|情緒/.test(text)) {
+        needs.add('行為功能介入');
+      }
+      return Array.from(needs);
+    }
+
+    const goalBank = {
+      '國語文閱讀與書寫': [
+        {
+          annual: '提升閱讀理解與重點整理能力，能在教師提供閱讀策略支持下，理解國中階段文本的主要訊息並完成簡要摘要。',
+          semester: '能使用「標題預測、畫關鍵詞、段落重點句」策略，整理一篇短文的主要內容。',
+          short: ['能在文本中圈選關鍵詞並說明其與主題的關係。', '能依提示完成段落大意或三句摘要。', '能根據題目要求找出文本中的明示訊息與簡單推論線索。']
+        },
+        {
+          annual: '提升書寫表達與段落組織能力，能依主題完成具基本結構的短文或學習單回答。',
+          semester: '能依「主題句、理由、例子、結語」架構完成一段 80 至 120 字短文。',
+          short: ['能依句型提示寫出完整句。', '能使用連接詞串連兩個以上想法。', '能在檢核表協助下修正漏字、語意不完整或順序混亂處。']
+        },
+        {
+          annual: '強化課堂語文任務的理解與完成度，能依指定步驟完成閱讀、摘記與回答。',
+          semester: '能在分段指令下完成課文重點整理與基本理解題。',
+          short: ['能確認任務要求並標記需完成的項目。', '能依教師示範完成同類型題目。', '能在時間提醒下完成指定份量。']
+        }
+      ],
+      '數學解題與計算': [
+        {
+          annual: '提升數學基本計算與錯誤檢核能力，能在教學支持下完成國中數學基礎題型。',
+          semester: '能依步驟表完成四則運算或代數基礎題，並使用檢核流程降低計算錯誤。',
+          short: ['能正確抄寫題目並標記已知條件。', '能依步驟完成計算過程。', '能使用反算、估算或代入方式檢查答案。']
+        },
+        {
+          annual: '提升數學文字題理解與解題規劃能力，能將題意轉換為可操作的算式或圖表。',
+          semester: '能在教師提示下找出文字題的關鍵資訊，並選擇合適的解題策略。',
+          short: ['能圈選問題要求與數量關係。', '能畫出線段圖、表格或簡圖協助理解。', '能說明自己選擇運算方式的理由。']
+        },
+        {
+          annual: '建立數學學習自我監控能力，能分辨自己不理解的步驟並提出具體求助。',
+          semester: '能使用數學解題檢核表記錄已完成步驟與卡住之處。',
+          short: ['能指出題目中不懂的詞語或條件。', '能向教師說明卡住的步驟。', '能根據回饋修正解題流程。']
+        }
+      ],
+      '學習策略與任務完成': [
+        {
+          annual: '提升課堂任務理解、規劃與完成能力，能在逐步減少提示下完成指定學習任務。',
+          semester: '能使用任務檢核表，於課堂時間內完成指定學習單或作業。',
+          short: ['能複述本節課需完成的任務。', '能將任務分成開始、進行、檢查三步驟。', '能在時間提醒下完成至少一項指定任務。']
+        },
+        {
+          annual: '建立有效的學習方法，能依課程內容選擇記憶、整理或練習策略。',
+          semester: '能在教師示範後使用關鍵字、圖像或表格整理學習內容。',
+          short: ['能用兩欄表整理概念與例子。', '能將新概念與生活經驗連結。', '能用自己的話說明學到的重點。']
+        },
+        {
+          annual: '提升作業與學習材料管理能力，能穩定準備課堂用品並追蹤作業進度。',
+          semester: '能使用作業紀錄表或提醒工具，完成並繳交指定作業。',
+          short: ['能在下課前記錄作業。', '能依檢核表整理所需用品。', '能於截止日前主動確認完成情形。']
+        }
+      ],
+      '注意力與執行功能': [
+        {
+          annual: '提升注意力維持與工作記憶支持能力，能在明確結構下完成多步驟任務。',
+          semester: '能依視覺步驟表完成 3 至 4 個連續步驟的學習任務。',
+          short: ['能看懂並勾選已完成步驟。', '能在分心後依提示回到任務。', '能在任務結束前檢查是否遺漏項目。']
+        },
+        {
+          annual: '提升時間管理能力，能依任務需求分配時間並完成課堂活動。',
+          semester: '能使用計時器或時間區段提示，在規定時間內完成指定任務。',
+          short: ['能估計完成任務所需時間。', '能在時間提醒後調整速度。', '能於時間結束前完成主要要求。']
+        },
+        {
+          annual: '提升自我監控能力，能辨識分心、停滯或錯誤狀況並採取修正策略。',
+          semester: '能使用自我檢核表記錄是否專注、是否完成與是否需要協助。',
+          short: ['能辨識自己是否離題或停下。', '能使用求助句型提出需求。', '能依教師回饋修正行動。']
+        }
+      ],
+      '社交溝通與同儕互動': [
+        {
+          annual: '提升社交情境理解能力，能依他人表情、語氣與情境線索判斷可能感受與需求。',
+          semester: '能在角色扮演或圖片情境中，說出他人可能的情緒與原因。',
+          short: ['能辨識常見情緒表情與語氣。', '能說出造成他人情緒的可能事件。', '能選擇合宜的回應句型。']
+        },
+        {
+          annual: '提升同儕互動與合作能力，能在小組活動中使用合宜方式加入、詢問與回應。',
+          semester: '能在教師或同儕示範後，使用至少兩種合宜句型參與小組互動。',
+          short: ['能使用「我可以一起嗎」等加入句型。', '能等待他人說完後再回應。', '能在衝突時使用求助或協商句型。']
+        },
+        {
+          annual: '提升情境彈性與觀點取替能力，能理解不同人對同一事件可能有不同想法。',
+          semester: '能在社交故事或影片情境中，說明自己與他人的不同觀點。',
+          short: ['能區分事實、想法與感受。', '能提出至少一種他人的可能想法。', '能依情境調整自己的回應方式。']
+        }
+      ],
+      '情緒行為與自我調節': [
+        {
+          annual: '提升情緒辨識與表達能力，能以合宜方式說明自己的感受、原因與需要。',
+          semester: '能使用情緒量表或句型，描述當下情緒強度與需要的協助。',
+          short: ['能從情緒詞卡中選出符合狀態的詞語。', '能說出造成情緒的可能原因。', '能使用「我需要……」句型提出協助。']
+        },
+        {
+          annual: '建立自我調節策略，能在焦慮、受挫或衝突情境中使用替代行為降低問題行為。',
+          semester: '能在教師提示下使用深呼吸、暫停卡、冷靜角或求助句型處理情緒。',
+          short: ['能辨識自己即將失控或卡住的訊號。', '能選擇一項冷靜策略。', '能在冷靜後回到原任務或完成替代任務。']
+        },
+        {
+          annual: '提升接受回饋與修正行為的能力，能在被提醒後以較穩定方式調整行動。',
+          semester: '能在低威脅提醒下聽取教師回饋，並完成一項可觀察的修正行動。',
+          short: ['能區分提醒與責備。', '能複述教師希望修正的事項。', '能在提示後改用合宜行為。']
+        }
+      ],
+      '生活管理與校園適應': [
+        {
+          annual: '提升生活自理與校園常規適應能力，能依固定流程完成每日學校生活任務。',
+          semester: '能依個人檢核表完成用品準備、作業整理與課堂轉換。',
+          short: ['能在指定時間確認用品。', '能依班級流程完成換教室或課程轉換。', '能主動確認未完成事項。']
+        },
+        {
+          annual: '提升問題解決與求助能力，能在校園生活困難情境中尋找合適資源。',
+          semester: '能依「先想辦法、再找人、說清楚」流程處理常見校園問題。',
+          short: ['能說出問題發生的時間、地點與內容。', '能選擇合適的求助對象。', '能依建議完成後續處理。']
+        },
+        {
+          annual: '提升自我倡議能力，能理解自己的學習需求並向教師提出合理調整。',
+          semester: '能在需要協助時，以具體句型說明困難與希望的支持方式。',
+          short: ['能說出自己常見的學習困難。', '能選擇可行的支持策略。', '能在適當時機向教師提出需求。']
+        }
+      ],
+      '升學與生涯轉銜': [
+        {
+          annual: '建立升學與生涯探索能力，能認識個人興趣、能力與高中職群科的關聯。',
+          semester: '能完成至少兩類職群或校科探索紀錄，並說明與自身興趣能力的符合程度。',
+          short: ['能列出自己的興趣與優勢。', '能蒐集職群或科別基本資訊。', '能說出選擇或不選擇某類科的理由。']
+        },
+        {
+          annual: '提升轉銜準備與自我管理能力，能依升學進程完成必要資料與準備事項。',
+          semester: '能在教師協助下完成升學資料整理、重要時程紀錄與諮詢提問。',
+          short: ['能記錄重要升學時程。', '能整理個人學習表現與需求。', '能在諮詢時提出至少一個問題。']
+        },
+        {
+          annual: '提升未來學習環境適應能力，能理解不同學校或科別的課程要求與支持需求。',
+          semester: '能比較至少兩種可能進路的課程型態、環境要求與所需支持。',
+          short: ['能說出不同進路的主要差異。', '能辨識自己可能需要的協助。', '能與家長或教師討論可行選擇。']
+        }
+      ]
+    };
+
+    function goalRows(domains, count) {
+      const success = val('successRate', '80%');
+      const duration = val('duration', '連續4週');
+      const support = val('supportLevel', '在教師提供視覺提示與口頭提醒下');
+      const evalMethod = val('evaluationMethod', '課堂觀察、作品檢核、學習單與教師紀錄');
+      let rows = '';
+      domains.forEach(domain => {
+        const goals = goalBank[domain] || [];
+        goals.slice(0, count).forEach((g, i) => {
+          rows += `<tr>
+            <td>${esc(domain)}-${i + 1}</td>
+            <td>${esc(g.annual)}</td>
+            <td>${support}，學生${esc(g.semester.replace(/^能/, '能'))}，${duration}達成標準為${success}。</td>
+            <td><ol>${g.short.map(s => `<li>${support}，學生${esc(s)}，達成標準為${success}。</li>`).join('')}</ol></td>
+            <td>${esc(evalMethod)}</td>
+            <td>${esc(duration)}；學期中與學期末檢核。</td>
+          </tr>`;
+        });
+      });
+      return rows || `<tr><td colspan="6">尚未勾選優先目標領域，建議至少選擇 2 個領域。</td></tr>`;
+    }
+
+    function buildServiceText(needs) {
+      const accommodation = val('accommodation', '依學生需求提供延長作答、分段評量、降低抄寫量、關鍵字提示與口頭確認。');
+      const related = val('relatedService', '由特教教師與導師定期交換學生學習與適應情形，必要時邀請輔導教師或相關專業人員提供諮詢。');
+      const defaultStrategies = [
+        '提供明確、短句、分段式指令，並確認學生理解任務要求。',
+        '使用視覺流程表、檢核表、範例與計時工具協助學生開始、維持與完成任務。',
+        '將任務拆成可完成的小步驟，完成後給予具體回饋。',
+        '安排低威脅提醒方式，避免公開指責造成情緒升高。',
+        '與導師及家長建立固定回饋機制，追蹤目標達成情形。'
+      ];
+      const needStrategies = needs.map(n => {
+        const map = {
+          '簡化與分段指令': '以一至二步驟指令為主，必要時請學生複述任務。',
+          '視覺提示與步驟表': '提供書面流程、圖像提示或桌面檢核表，協助學生自我監控。',
+          '閱讀理解策略': '教導標題預測、關鍵詞圈選、段落重點句與摘要策略。',
+          '書寫組織鷹架': '提供句型、段落架構、連接詞與自我修正檢核表。',
+          '數學解題流程': '使用題意標記、圖示化、步驟表與錯誤檢核流程。',
+          '注意力與時間管理': '使用計時器、時間區段、任務檢核與短回饋協助維持專注。',
+          '社交理解與情境演練': '透過社交故事、影片、角色扮演與句型練習強化情境理解。',
+          '情緒辨識與調節': '使用情緒量表、冷靜策略、暫停卡與求助句型。',
+          '行為功能介入': '分析誘發情境與行為功能，教導替代行為並提供一致增強。',
+          '親師合作與家庭延伸': '提供家庭可執行的短時間練習與回饋紀錄。',
+          '評量調整': '依學生需求提供評量時間、方式、題目呈現或作答方式調整。',
+          '轉銜輔導': '安排升學、生涯、生活適應與自我倡議相關活動。'
+        };
+        return map[n] || n;
+      });
+      return {
+        strategies: Array.from(new Set([...defaultStrategies, ...needStrategies])),
+        accommodation,
+        related
+      };
+    }
+
+    function generateIEP() {
+      const domains = getChecked('priorityDomains');
+      const needs = inferNeeds();
+      const mode = val('templateMode','standard');
+      const goalCount = Number(val('goalCount','2'));
+      const services = buildServiceText(needs);
+      const student = val('studentName','學生');
+      const meetingDate = val('meetingDate', todayText());
+      const schoolName = val('school','');
+
+      const statusRows = [
+        ['學生特質摘要', val('profileSummary')],
+        ['優勢能力與興趣', val('strengths')],
+        ['主要困難與限制', val('challenges')],
+        ['家庭狀況與家長期待', val('family')],
+        ['普通班／任課教師觀察', val('teacherObservation')],
+        ['國語文／閱讀書寫', val('chineseStatus')],
+        ['數學／抽象理解', val('mathStatus')],
+        ['學習策略與執行功能', val('learningStatus')],
+        ['社會互動與溝通', val('socialStatus')],
+        ['情緒行為與自我調節', val('behaviorStatus')],
+        ['生活管理與校園適應', val('lifeStatus')]
+      ].map(([k,v]) => `<tr><th style="width:28%">${k}</th><td>${esc(v)}</td></tr>`).join('');
+
+      const briefNote = mode === 'brief'
+        ? '<p>本草稿採精簡格式，可複製至校務系統後依學校欄位拆分。</p>'
+        : '';
+
+      const meetingBlock = mode === 'meeting'
+        ? `<h2>八、IEP 會議討論與親師合作建議</h2>
+          <table>
+            <tr><th style="width:28%">會議討論重點</th><td>建議會議聚焦於學生目前最需優先支持之學習任務完成、社交情境理解、情緒調節與家庭延伸練習，並確認普通班與資源班之分工。</td></tr>
+            <tr><th>親師合作方式</th><td>每 2 至 4 週以聯絡簿、訊息或簡短會談追蹤目標執行情形；家長可在家中協助學生練習自我檢核、情緒表達或作業管理，避免一次要求過多項目。</td></tr>
+            <tr><th>學生參與方式</th><td>可視學生理解與情緒狀態，邀請學生說明自己覺得困難的情境、希望獲得的協助，以及本學期想先完成的一項目標。</td></tr>
+          </table>`
+        : '';
+
+      const behaviorText = val('behaviorPlan','若學生有明顯情緒或行為問題，建議進一步蒐集前事、行為、後果紀錄，分析行為功能後訂定替代行為、增強方式與行政支援。');
+      const transitionText = val('transitionPlan','國中階段轉銜可依年級調整：七年級著重校園適應，八年級著重自我認識與生涯探索，九年級著重升學進路、適性安置與自我倡議。');
+
+      const html = `
+        <h1>${schoolName ? esc(schoolName) + '<br>' : ''}國中學生個別化教育計畫（IEP）草稿</h1>
+        ${briefNote}
+        <h2>一、基本資料</h2>
+        <table>
+          <tr><th style="width:18%">學年度／學期</th><td style="width:32%">${esc(val('semester'))}</td><th style="width:18%">會議日期</th><td>${esc(meetingDate)}</td></tr>
+          <tr><th>學生</th><td>${esc(student)}</td><th>年級</th><td>${esc(val('gradeClass'))}</td></tr>
+          <tr><th>障礙類別／資格</th><td>${esc(val('disability'))}</td><th>安置與服務型態</th><td>${esc(val('placement'))}</td></tr>
+          <tr><th>參與人員</th><td colspan="3">${esc(val('participants'))}</td></tr>
+        </table>
+
+        <h2>二、學生能力現況、家庭狀況與需求評估</h2>
+        <table>${statusRows}</table>
+
+        <h2>三、特殊教育需求分析</h2>
+        <p>綜合學生現況、教師觀察與勾選項目，學生本學期主要需求可歸納如下：</p>
+        ${list(needs)}
+        <p>優先目標領域：${domains.length ? esc(domains.join('、')) : '尚未勾選，建議由IEP團隊依學生目前最迫切需求決定。'}</p>
+        <p>教師自訂目標或限制條件：${esc(val('customGoal'))}</p>
+
+        <h2>四、學年與學期教育目標</h2>
+        <table>
+          <tr>
+            <th style="width:13%">領域</th>
+            <th style="width:20%">學年目標</th>
+            <th style="width:24%">學期目標</th>
+            <th style="width:25%">短期目標／教學小步驟</th>
+            <th style="width:12%">評量方式</th>
+            <th style="width:12%">日期與標準</th>
+          </tr>
+          ${goalRows(domains, goalCount)}
+        </table>
+
+        <h2>五、特殊教育、相關服務與支持策略</h2>
+        <h3>教學與輔導策略</h3>
+        ${list(services.strategies)}
+        <h3>評量與課程調整</h3>
+        <p>${esc(services.accommodation)}</p>
+        <h3>相關專業服務與行政支援</h3>
+        <p>${esc(services.related)}</p>
+
+        <h2>六、行為功能介入方案與行政支援</h2>
+        <p>${esc(behaviorText)}</p>
+        <table>
+          <tr><th style="width:24%">可能誘發情境</th><td>課堂要求不明確、任務過難、被公開糾正、臨時變動、同儕互動誤解或等待時間過長。</td></tr>
+          <tr><th>替代行為</th><td>使用求助句型、暫停卡、情緒量表、短暫冷靜、重新確認任務或請教師提供分段提示。</td></tr>
+          <tr><th>增強與支持</th><td>完成替代行為後給予具體肯定；必要時調整座位、任務份量、提醒方式與回到任務的流程。</td></tr>
+        </table>
+
+        <h2>七、轉銜輔導與服務內容</h2>
+        <p>${esc(transitionText)}</p>
+        <table>
+          <tr><th style="width:24%">七年級</th><td>校園適應、課堂常規、資源班服務理解、基本自我倡議。</td></tr>
+          <tr><th>八年級</th><td>興趣能力探索、學習策略穩定化、人際互動與情緒調節。</td></tr>
+          <tr><th>九年級</th><td>升學進路探索、適性輔導、會考與免試入學支持、未來學校環境適應。</td></tr>
+        </table>
+        ${meetingBlock}
+
+        <h2>九、檢核提醒</h2>
+        <ul>
+          <li>目標應包含條件、可觀察行為、評量標準與檢核時間。</li>
+          <li>若涉及行為問題，需避免只寫「改善情緒」等籠統描述，宜補充誘發情境、行為功能與替代行為。</li>
+          <li>評量調整應與學生需求相連結，避免過度或不足調整。</li>
+          <li>正式送出前，應刪除不適用內容並補上學校表單要求之簽名、日期與會議紀錄欄位。</li>
+        </ul>
+      `;
+
+      $('output').innerHTML = html;
+      checkQuality(domains, needs);
+      $('outputWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function checkQuality(domains, needs) {
+      const items = [];
+      const statusFields = ['profileSummary','strengths','challenges','teacherObservation'];
+      const filledStatus = statusFields.filter(id => val(id,'') !== '').length;
+      if (filledStatus >= 3) items.push(['ok', '現況資料足夠：已填寫至少三項核心觀察欄位。']);
+      else items.push(['warn', '現況資料略少：建議補充學生特質、優勢、困難與教師觀察。']);
+      if (domains.length >= 2 && domains.length <= 4) items.push(['ok', '目標領域數量適中：符合一學期聚焦處理的原則。']);
+      else if (domains.length === 0) items.push(['bad', '尚未勾選優先目標領域：無法產生有效目標。']);
+      else items.push(['warn', '目標領域可能過多：建議優先保留 2–4 個最迫切領域。']);
+      if (needs.length >= 3) items.push(['ok', '需求支持項目明確：已形成可對應策略的需求清單。']);
+      else items.push(['warn', '需求支持項目偏少：建議勾選或補充特殊教育需求。']);
+      const behavior = val('behaviorPlan','');
+      const behaviorNeed = needs.includes('行為功能介入') || /情緒|行為|焦慮|衝動|離座|沉默|拒絕/.test([val('behaviorStatus',''), val('challenges','')].join(' '));
+      if (behaviorNeed && !behavior) items.push(['warn', '學生可能有情緒行為需求：建議補充行為功能介入摘要。']);
+      else items.push(['ok', '行為介入欄位狀態可接受。']);
+      $('qualityPanel').innerHTML = items.map(([type, text]) => `<div class="quality-item ${type}">${text}</div>`).join('');
+    }
+
+    function exportWord() {
+      const content = $('output').innerHTML;
+      if (!content || content.includes('尚未產生 IEP 草稿')) {
+        alert('請先產生 IEP 草稿，再匯出 Word。');
+        return;
+      }
+      const filenameBase = (val('studentName','IEP') || 'IEP').replace(/[\\/:*?"<>|\s]+/g, '_');
+      const html = `<!DOCTYPE html>
+      <html lang="zh-Hant">
+      <head>
+        <meta charset="UTF-8">
+        <title>IEP草稿</title>
+        <style>
+          body { font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif; line-height: 1.6; color:#111827; }
+          h1 { text-align:center; font-size:20pt; }
+          h2 { font-size:14pt; border-bottom:1.5pt solid #111827; padding-bottom:4pt; margin-top:18pt; }
+          h3 { font-size:12pt; margin-top:10pt; }
+          table { width:100%; border-collapse:collapse; table-layout:fixed; margin:6pt 0 10pt; }
+          th, td { border:1pt solid #444; padding:5pt; vertical-align:top; word-break:break-word; }
+          th { background:#f2f2f2; }
+          p, li { font-size:11pt; }
+        </style>
+      </head>
+      <body>${content}</body></html>`;
+      const blob = new Blob(['\ufeff', html], { type: 'application/msword;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${filenameBase}_IEP草稿.doc`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    async function copyOutput() {
+      const text = $('output').innerText;
+      if (!text || text.includes('尚未產生 IEP 草稿')) {
+        alert('請先產生 IEP 草稿。');
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        alert('已複製文字，可貼入校務系統或 Word。');
+      } catch (err) {
+        alert('瀏覽器不允許自動複製，請手動選取產出區文字。');
+      }
+    }
+
+    function clearForm() {
+      if (!confirm('確定要清空所有輸入欄位？此動作無法復原。')) return;
+      document.querySelectorAll('input, textarea').forEach(el => {
+        if (el.type === 'checkbox') el.checked = false;
+        else if (el.type !== 'date') el.value = '';
+        else el.value = '';
+      });
+      document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+      $('output').innerHTML = '<h1>尚未產生 IEP 草稿</h1><p>請先輸入學生資料與需求，再點選「產生 IEP 草稿」。產出後可直接在此區塊編輯文字，再匯出 Word。</p>';
+      $('qualityPanel').innerHTML = '<div class="quality-item warn">尚未產生草稿。</div>';
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function scrollToBlock(id) {
+      const el = $(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      if (event && event.target) event.target.classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      $('meetingDate').value = todayText();
+    });
+  </script>
+</body>
+</html>
